@@ -17,3 +17,22 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::resource('key', 'KeyController', [
+    'except' => [
+        'edit',
+        'create',
+    ],
+]);
+
+Route::get('language',[
+    'uses' => 'LanguageController@index'
+]);
+
+Route::post('translation',[
+    'uses' => 'TranslationController@update'
+]);
+
+Route::get('export',[
+    'uses' => 'TranslationController@index'
+]);
