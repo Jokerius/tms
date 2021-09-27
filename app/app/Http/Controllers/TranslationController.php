@@ -1,9 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Yaml\Yaml;
+use ZipArchive;
+use App\Models\Language;
+use App\Models\Translation;
+use App\Models\Key;
 
 class TranslationController extends Controller {
 
@@ -41,10 +45,10 @@ class TranslationController extends Controller {
         $languages = Language::all();
         $keys = Key::leftJoin('translations', 'keys.id' ,'=', 'translations.key_id')->get();        
         $data = [];        
-        
+
         if($type == 'json'){
             $zip_file = 'languages.zip'; 
-            $zip = new \ZipArchive();
+            $zip = new ZipArchive();
             $zip->open($zip_file, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
             
             foreach($languages as $language){
@@ -75,7 +79,7 @@ class TranslationController extends Controller {
                 return response()->download(storage_path().'/translations.yaml');                            
             }
         }else{
-            return response()->json(['success' => 0]);
+            return response()->json(['success' => 0, 'error' => 'Incorrect type']);
         }
     }        
 

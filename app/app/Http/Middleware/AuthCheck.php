@@ -19,8 +19,8 @@ class AuthCheck
         if(!$token){
             return response()->json('Access Denied', 403);
         }
-        
-        if($token->access == Token::READ_ACCESS && $request->method() != 'get'){
+
+        if($token->access == Token::READ_ACCESS && $request->method() != 'GET'){
             return response()->json('Access Denied', 403);            
         }
         
