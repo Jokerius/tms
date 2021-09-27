@@ -10,7 +10,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.54",
         "laravel/sanctum": "^2.11",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "symfony/yaml": "^5.3"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -28,11 +29,19 @@
         }
     },
     "autoload-dev": {
+        "classmap": [
+            "app/Http/Controllers/KeyController.php",
+            "app/Http/Controllers/LanguageController.php",
+            "app/Http/Controllers/TranslationController.php"
+        ],        
         "psr-4": {
             "Tests\\": "tests/"
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "php artisan migrate --force"
+        ],        
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

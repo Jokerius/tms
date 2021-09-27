@@ -13,6 +13,7 @@ class AddInitialEntities extends Migration
      */
     public function up()
     {
+        
         Schema::create('languages', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();            
@@ -20,6 +21,12 @@ class AddInitialEntities extends Migration
             $table->string('iso');
             $table->boolean('rtl')->default(0);
         });
+       
+        Schema::create('keys', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->timestamps();            
+            $table->string('name')->unique();
+        });             
         
         Schema::create('translations', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -27,13 +34,7 @@ class AddInitialEntities extends Migration
             $table->text('text');
             $table->foreignId('language_id')->constrained()->onDelete('cascade');
             $table->foreignId('key_id')->constrained()->onDelete('cascade');
-        });        
-        
-        Schema::create('keys', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();            
-            $table->string('name')->unique();
-        });           
+        });                      
         
         Schema::create('tokens', function (Blueprint $table) {
             $table->bigIncrements('id');

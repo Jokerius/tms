@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Yaml\Yaml;
 
 class TranslationController extends Controller {
 
@@ -39,6 +40,8 @@ class TranslationController extends Controller {
         
         $languages = Language::all();
         $keys = Key::leftJoin('translations', 'keys.id' ,'=', 'translations.key_id')->get();        
+        $data = [];        
+        
         if($type == 'json'){
             $zip_file = 'languages.zip'; 
             $zip = new \ZipArchive();
@@ -46,7 +49,6 @@ class TranslationController extends Controller {
             
             foreach($languages as $language){
                 $filename = $language->iso.'.json';
-                $data = [];
                 foreach($keys->where('keys.language_id', $language->id) as $key){
                     $data[$key->name] = $key->text;
                 }
@@ -59,8 +61,19 @@ class TranslationController extends Controller {
             $zip->close(); 
 
             return response()->download($zip);            
-        }elseif($type == 'yaml'){
-            
+        }elseif($type == 'yaml'){            
+            foreach($languages as $language){
+                $data[$language->iso] = [];
+                foreach($keys->where('keys.language_id', $language->id) as $key){
+                    $data[$language->iso][$key->name] = $key->text;
+                }                
+                
+                $file = fopen(storage_path().'/translations.yaml', 'w');                        
+                File::put(storage_path().'/translations.yaml', Yaml::dump($data));       
+                fclose($file);                                   
+                
+                return response()->download(storage_path().'/translations.yaml');                            
+            }
         }else{
             return response()->json(['success' => 0]);
         }

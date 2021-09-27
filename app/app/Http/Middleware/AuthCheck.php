@@ -3,15 +3,19 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Token;
+use App\Models\Token;
 
 class AuthCheck
 {
 
     public function handle($request, Closure $next)
-    {        
-        $token = Token::where('token', $request->header('auth-token'))->first();
+    {           
+        if(!$request->header('auth-token')){
+            return response()->json('Access Denied', 403);
+        }
         
+        $token = Token::where('token', $request->header('auth-token'))->first();
+
         if(!$token){
             return response()->json('Access Denied', 403);
         }
